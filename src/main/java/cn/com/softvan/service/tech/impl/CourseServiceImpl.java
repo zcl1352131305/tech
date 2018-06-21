@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class CourseServiceImpl extends AbstractService<Course> implements Course
 
     }
 
-    public List<Course> findList(Map<String, Object> map){
+    public List<Course> findList(HttpServletRequest request){
         Condition condition = new Condition(Course.class);
         SystemUser user = (SystemUser) SecurityUtils.getSubject().getPrincipal();
         condition.createCriteria().andCondition("teacher_id = '" + user.getId()+ "'");

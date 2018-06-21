@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import tk.mybatis.mapper.entity.Condition;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public interface Service<T> {
     List<T> findByIds(String ids);//通过多个ID查找//eg：ids -> “1,2,3,4”
     List<T> findByCondition(Condition condition);//根据条件查找
     List<T> findAll();//获取所有
-    List<T> findList(Map<String, Object> map);
+    List<T> findList(HttpServletRequest request);
     //返回该模块模板路径
     String getTemplatePath();
 }

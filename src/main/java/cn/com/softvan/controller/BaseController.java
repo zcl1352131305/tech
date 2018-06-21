@@ -33,11 +33,11 @@ public class BaseController<B, IDType>{
         modelClass = (Class<B>) pt.getActualTypeArguments()[0];
     }
     @GetMapping(value = "/list/{page}")
-    public ModelAndView list(@PathVariable(value = "page")Integer page,
+    public ModelAndView list(HttpServletRequest request,@PathVariable(value = "page")Integer page,
                              @RequestParam(value = "size", defaultValue = "15")Integer size,
                              Map<String, Object> map){
         PageHelper.startPage(page, size);
-        List<B> list = service.findList(map);
+        List<B> list = service.findList(request);
         PageInfo pageInfo = new PageInfo<>(list);
         map.put("pageInfo", pageInfo);
         return new ModelAndView(service.getTemplatePath().concat("_list"), map);

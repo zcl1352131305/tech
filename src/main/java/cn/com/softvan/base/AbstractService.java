@@ -11,6 +11,7 @@ import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Condition;
 
+import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Date;
@@ -88,7 +89,7 @@ public abstract class AbstractService<T extends BaseEntity> implements Service<T
         return mapper.selectAll();
     }
 
-    public List<T> findList(Map<String, Object> map){
+    public List<T> findList(HttpServletRequest request){
         List<T> list = findAll();
         return list;
     }
