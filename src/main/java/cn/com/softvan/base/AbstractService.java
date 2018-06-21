@@ -1,18 +1,26 @@
 package cn.com.softvan.base;
 
 
+import cn.com.softvan.entity.BaseEntity;
+import cn.com.softvan.entity.system.SystemUser;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.apache.commons.httpclient.util.DateUtil;
 import org.apache.ibatis.exceptions.TooManyResultsException;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import tk.mybatis.mapper.entity.Condition;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 基于通用MyBatis Mapper插件的Service接口的实现
  */
-public abstract class AbstractService<T> implements Service<T> {
+public abstract class AbstractService<T extends BaseEntity> implements Service<T> {
 
     @Autowired
     protected Mapper<T> mapper;
@@ -25,6 +33,8 @@ public abstract class AbstractService<T> implements Service<T> {
     }
 
     public void save(T model) {
+        model.setCreateDate(new Date());
+        model.setUpdateDate(new Date());
         mapper.insertSelective(model);
     }
 
@@ -41,6 +51,7 @@ public abstract class AbstractService<T> implements Service<T> {
     }
 
     public void update(T model) {
+        model.setUpdateDate(new Date());
         mapper.updateByPrimaryKeySelective(model);
     }
 
@@ -75,6 +86,11 @@ public abstract class AbstractService<T> implements Service<T> {
 
     public List<T> findAll() {
         return mapper.selectAll();
+    }
+
+    public List<T> findList(Map<String, Object> map){
+        List<T> list = findAll();
+        return list;
     }
 
 }

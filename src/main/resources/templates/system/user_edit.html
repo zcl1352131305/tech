@@ -1,8 +1,11 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" ng-app="app">
-<head th:include="common/header::public_header"></head>
-<body ng-controller="controller">
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <div th:include="common/header::public_header"></div>
+    <link href="/static/css/plugins/iCheck/custom.css" rel="stylesheet">
+</head>
+<body >
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
@@ -39,10 +42,13 @@
                                 <label class="col-sm-2 control-label">角色</label>
                                 <div class="col-sm-10">
                                     <div class="radio i-checks">
-                                        <label><input type="radio" value="3" name="roles" > 学生</label>
+                                        <label><input type="radio" value="1" name="roles" th:checked="${null != bean.roles && bean.roles[0] == 1}" > 管理员</label>
                                     </div>
                                     <div class="radio i-checks">
-                                        <label><input type="radio" value="2" name="roles" > 教师</label>
+                                        <label><input type="radio" value="3" name="roles" th:checked="${null == bean.roles || bean.roles[0] == 3}" > 学生</label>
+                                    </div>
+                                    <div class="radio i-checks">
+                                        <label><input type="radio" value="2" name="roles" th:checked="${null != bean.roles && bean.roles[0] == 2}" > 教师</label>
                                     </div>
                                 </div>
                             </div>
@@ -58,20 +64,6 @@
                                 <label class="col-sm-2 control-label">姓名</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="bean_nickname" name="nickname"  th:value="${bean.nickname}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">登录名</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="bean_userName" name="userName"  th:value="${bean.userName}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">密码</label>
-                                <div class="col-sm-10">
-                                    <input type="password" class="form-control" id="bean_password" name="password" value=""/>
                                 </div>
                             </div>
 

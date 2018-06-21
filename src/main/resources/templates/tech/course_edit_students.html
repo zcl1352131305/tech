@@ -1,7 +1,7 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
-<head>
+<head >
     <meta charset="UTF-8">
     <title>数据编辑页面</title>
     <div th:include="common/header::public_header"></div>
@@ -35,55 +35,33 @@
                 <div class="row clearfix">
                     <div class="col-md-12 column">
 
-                        <form th:method="${bean.id == null?'post':'put'}" id="form_data" action="/admin/tech/course" class="form-horizontal">
-                            <input type="hidden" th:value="${bean.id}" id="bean_id" name="id">
+                        <form th:method="${'put'}" id="form_data" action="/admin/tech/courseStudent/updateStudents" class="form-horizontal">
+                            <input type="hidden" th:value="${courseId}" name="courseId">
 
                             <div id="dropzone_area"></div>
 
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">名称</label>
+                                <label class="col-sm-2 control-label">课程名称</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="name" name="name" th:value="${bean.name}"/>
+                                    <input type="text" class="form-control" readonly  th:value="${course.name}">
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">编码</label>
+                                <label class="col-sm-2 control-label">已导入学生</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="code" name="code" th:value="${bean.code}"/>
+                                    <ul class="tag-list" style="padding: 0">
+                                        <li th:each="student,stat : ${students}"><a href="javascript:void(0)" th:text="${student.nickname}"></a></li>
+                                    </ul>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label class="col-sm-2 control-label">分数</label>
+                                <label class="col-sm-2 control-label">输入学号导入</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="score" name="score" th:value="${bean.score}"/>
+                                    <textarea type="text" class="form-control" id="studentNums" name="studentNums" th:text="${studentNums}" placeholder="多个学生以逗号分隔"></textarea>
                                 </div>
                             </div>
-
-
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">年级</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="grade" name="grade" th:value="${bean.grade}"/>
-                                </div>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">班级</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="clazz" name="clazz" th:value="${bean.clazz}"/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label">专业</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="profession" name="profession" th:value="${bean.profession}"/>
-                                </div>
-                            </div>
-
 
 
                             <div class="form-group">

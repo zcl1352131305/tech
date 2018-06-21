@@ -1,5 +1,6 @@
 package cn.com.softvan.entity.system;
 
+import cn.com.softvan.entity.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -8,10 +9,7 @@ import java.util.List;
 
 @Table(name = "t_system_user")
 @Data
-public class SystemUser {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class SystemUser extends BaseEntity{
 
     private String workid;
     private String grade;
@@ -41,10 +39,6 @@ public class SystemUser {
      */
     private String password;
 
-    /**
-     * 盐
-     */
-    private String salt;
 
     /**
      * 锁定
@@ -73,23 +67,7 @@ public class SystemUser {
     @Column(name = "job_title")
     private String jobTitle;
 
-    /**
-     * 创建时间
-     */
-    @Column(name = "create_date")
-    private Date createDate;
 
-    /**
-     * 更新时间
-     */
-    @Column(name = "update_date")
-    private Date updateDate;
-
-    /**
-     * 删除标记(1.删除，0未删除)
-     */
-    @Column(name = "del_flag")
-    private String delFlag;
 
 
     @Transient

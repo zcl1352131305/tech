@@ -37,7 +37,7 @@ public class BaseController<B, IDType>{
                              @RequestParam(value = "size", defaultValue = "15")Integer size,
                              Map<String, Object> map){
         PageHelper.startPage(page, size);
-        List<B> list = service.findAll();
+        List<B> list = service.findList(map);
         PageInfo pageInfo = new PageInfo<>(list);
         map.put("pageInfo", pageInfo);
         return new ModelAndView(service.getTemplatePath().concat("_list"), map);

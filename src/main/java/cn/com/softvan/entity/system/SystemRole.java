@@ -1,19 +1,15 @@
 package cn.com.softvan.entity.system;
 
+import cn.com.softvan.entity.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Table(name = "t_system_role")
 @Data
-public class SystemRole {
-    /**
-     * id
-     */
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class SystemRole  extends BaseEntity {
 
     /**
      * 角色名
@@ -37,23 +33,6 @@ public class SystemRole {
      */
     private String description;
 
-    /**
-     * 创建时间
-     */
-    @Column(name = "create_date")
-    private Date createDate;
-
-    /**
-     * 更新时间
-     */
-    @Column(name = "update_date")
-    private Date updateDate;
-
-    /**
-     * 删除标记(1.删除，0未删除)
-     */
-    @Column(name = "del_flag")
-    private String delFlag;
-
-
+    @Transient
+    List<Integer> permits;
 }

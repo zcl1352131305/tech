@@ -1,5 +1,6 @@
 package cn.com.softvan.entity.data;
 
+import cn.com.softvan.entity.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,10 +8,8 @@ import java.util.Date;
 
 @Table(name = "t_data_file")
 @Data
-public class DataFile  {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class DataFile  extends BaseEntity{
+
 
     /**
      * 信息id
@@ -52,17 +51,6 @@ public class DataFile  {
      */
     private Integer sort;
 
-    /**
-     * 创建时间
-     */
-    @Column(name = "create_date")
-    private Date createDate;
-
-    /**
-     * 更新时间
-     */
-    @Column(name = "update_date")
-    private Date updateDate;
 
 
 

@@ -14,7 +14,6 @@
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="salt" jdbcType="VARCHAR" property="salt" />
     <result column="locked" jdbcType="BIT" property="locked" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="mail" jdbcType="VARCHAR" property="mail" />

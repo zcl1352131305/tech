@@ -155,7 +155,7 @@
         if(nodes){
             $.each(nodes, function (i,val) {
                 permitsId = (typeof val=='string')&&val.constructor==String?val:val.id;
-                $("#"+id).append("<input type='hidden' value='"+permitsId+"' name='permitId'/>");
+                $("#"+id).append("<input type='hidden' value='"+permitsId+"' name='permits'/>");
             })
         }
     }

@@ -68,18 +68,6 @@
                             </shiro:hasPermission>
 
 
-                            <shiro:hasPermission name="organization">
-                                <li>
-                                    <a class="J_menuItem" href="/admin/system/organization/list/1">组织机构</a>
-                                </li>
-                            </shiro:hasPermission>
-
-                            <shiro:hasPermission name="variable">
-                                <li>
-                                    <a class="J_menuItem" href="/admin/system/variable/list/1">数据字典</a>
-                                    <!--默认主页需在对应的菜单a元素上添加data-index="0"-->
-                                </li>
-                            </shiro:hasPermission>
                         </ul>
                     </li>
                 </shiro:hasPermission>
@@ -90,13 +78,16 @@
                         <i class="fa fa-gears"></i>
                         <span class="nav-label">课程管理</span>
                     </a>
-                    <!--<ul class="nav nav-second-level">
-                        <li>
-                            <a class="J_menuItem" href="/admin/app/user/list/1">学生管理</a>
-                            &lt;!&ndash;默认主页需在对应的菜单a元素上添加data-index="0"&ndash;&gt;
-                        </li>
-                    </ul>-->
                 </li>
+                </shiro:hasPermission>
+
+                <shiro:hasPermission name="student">
+                    <li>
+                        <a class="J_menuItem" href="/admin/tech/student/course/list/1">
+                            <i class="fa fa-gears"></i>
+                            <span class="nav-label">我的课程</span>
+                        </a>
+                    </li>
                 </shiro:hasPermission>
 
 

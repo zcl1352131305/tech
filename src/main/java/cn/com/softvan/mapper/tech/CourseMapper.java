@@ -14,5 +14,5 @@ import java.util.List;
  */
 @Component
 public interface CourseMapper extends Mapper<Course> {
-
+    List<Course> selectStudentCourses(Integer studentId);
 }

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 
@@ -57,12 +58,30 @@ public class SystemUserServiceImpl extends AbstractService<SystemUser> implement
 
     @Override
     public void save(SystemUser model) {
-        int id = mapper.insertSelective(model);
+        model.setCreateDate(new Date());
+        model.setUpdateDate(new Date());
+        model.setPassword("111111");
+        model.setUserName(model.getWorkid());
+        mapper.insertSelective(model);
         List<Integer> roles = model.getRoles();
+        saveUserRole(roles,model.getId());
+    }
+
+    public void update(SystemUser model) {
+        model.setUpdateDate(new Date());
+        mapper.updateByPrimaryKeySelective(model);
+        SystemUserRole userRole = new SystemUserRole();
+        userRole.setUserId(model.getId());
+        systemUserRoleMapper.deleteByUserId(model.getId());
+        List<Integer> roles = model.getRoles();
+        saveUserRole(roles,model.getId());
+    }
+
+    private void saveUserRole(List<Integer> roles ,Integer id){
         if(null != roles){
             for(Integer roleId:roles){
                 SystemUserRole userRole = new SystemUserRole();
-                userRole.setUserId(model.getId());
+                userRole.setUserId(id);
                 userRole.setRoleId(roleId);
                 systemUserRoleMapper.insertSelective(userRole);
             }

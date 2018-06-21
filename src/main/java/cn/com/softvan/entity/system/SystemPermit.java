@@ -1,5 +1,6 @@
 package cn.com.softvan.entity.system;
 
+import cn.com.softvan.entity.BaseEntity;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -7,7 +8,7 @@ import java.util.Date;
 
 @Table(name = "t_system_permit")
 @Data
-public class SystemPermit {
+public class SystemPermit  extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
