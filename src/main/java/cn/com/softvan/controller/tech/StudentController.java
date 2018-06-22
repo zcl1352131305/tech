@@ -1,8 +1,12 @@
 package cn.com.softvan.controller.tech;
 
+import cn.com.softvan.entity.data.DataFile;
 import cn.com.softvan.entity.system.SystemUser;
 import cn.com.softvan.entity.tech.Course;
 import cn.com.softvan.entity.tech.CourseWork;
+import cn.com.softvan.entity.tech.CourseWorkStudent;
+import cn.com.softvan.enums.ResultEnum;
+import cn.com.softvan.service.data.DataFileService;
 import cn.com.softvan.service.system.SystemUserService;
 import cn.com.softvan.service.tech.CourseService;
 import cn.com.softvan.service.tech.CourseWorkService;
@@ -11,11 +15,9 @@ import com.github.pagehelper.PageInfo;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -34,11 +36,22 @@ public class StudentController {
     @Autowired
     private CourseWorkService courseWorkService;
 
+    @Autowired
+    private DataFileService dataFileService;
+
+
 
     private String getTemplatePath(){
         return "student/";
     }
 
+    /**
+     * 学生课程列表
+     * @param page
+     * @param size
+     * @param map
+     * @return
+     */
     @GetMapping(value = "/course/list/{page}")
     public ModelAndView list(@PathVariable(value = "page")Integer page, @RequestParam(value = "size", defaultValue = "15")Integer size, Map<String, Object> map){
         PageHelper.startPage(page, size);
@@ -49,6 +62,15 @@ public class StudentController {
         return new ModelAndView("student/".concat("course_list"), map);
     }
 
+    /**
+     * 学生作业列表
+     * @param request
+     * @param page
+     * @param size
+     * @param courseId
+     * @param map
+     * @return
+     */
     @GetMapping(value = "/courseWork/workList/{page}")
     public ModelAndView list(HttpServletRequest request, @PathVariable(value = "page")Integer page,
                              @RequestParam(value = "size", defaultValue = "15")Integer size,
@@ -64,12 +86,68 @@ public class StudentController {
         Integer courseIdI = Integer.parseInt(courseId);
 
         PageHelper.startPage(page, size);
-        List<CourseWork> list = courseWorkService.findList(courseIdI);
+        List<CourseWork> list = courseWorkService.findStudentWorkList(courseIdI);
         PageInfo pageInfo = new PageInfo<>(list);
         map.put("pageInfo", pageInfo);
 
         map.put("courseId", courseId);
         return new ModelAndView(getTemplatePath().concat("courseWork_list"), map);
     }
+
+
+    /**
+     * 学生作业提交编辑
+     * @param request
+     * @param workId
+     * @param courseId
+     * @param map
+     * @return
+     */
+    @GetMapping(value = "/courseWork/submitEdit/{workId}")
+    public ModelAndView submitEdit(HttpServletRequest request, @PathVariable Integer workId,
+                             String courseId,
+                             Map<String, Object> map){
+
+        if(null == courseId || "null".equals(courseId)){
+            courseId = (String ) request.getSession().getAttribute("studentWorkCourseId");
+        }
+        else{
+            request.getSession().setAttribute("studentWorkCourseId",courseId);
+        }
+
+        CourseWork work = courseWorkService.findById(workId);
+
+        CourseWorkStudent studentWork = courseWorkService.getStudentWork(workId);
+        if(null == studentWork){
+            studentWork = new CourseWorkStudent();
+            studentWork.setWorkId(workId);
+        }
+
+        map.put("bean",studentWork);
+        map.put("work",work);
+        map.put("courseId", courseId);
+        return new ModelAndView(getTemplatePath().concat("courseWork_submit"), map);
+    }
+
+
+    /**
+     * 学生作业提交保存或更新
+     * @param workId
+     * @param courseId
+     * @param courseWorkStudentSubmitFiles
+     * @param attributes
+     * @return
+     */
+    @PostMapping(value = "/courseWork/submitWork")
+    public ModelAndView saveUpdateSave(Integer workId, Integer courseId,String[] courseWorkStudentSubmitFiles, RedirectAttributes attributes){
+        Integer fileId = null;
+        if(null != courseWorkStudentSubmitFiles){
+            fileId = Integer.parseInt(courseWorkStudentSubmitFiles[courseWorkStudentSubmitFiles.length-1]);
+        }
+        courseWorkService.submitWork(workId,fileId);
+        attributes.addFlashAttribute("msg", ResultEnum.SUCCESS.getMsg());
+        return new ModelAndView("redirect:/admin/tech/".concat(getTemplatePath()).concat("courseWork/workList/1?courseId="+courseId));
+    }
+
 
 }

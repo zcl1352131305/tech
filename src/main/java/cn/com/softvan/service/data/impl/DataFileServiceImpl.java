@@ -37,4 +37,11 @@ public class DataFileServiceImpl extends AbstractService<DataFile> implements Da
     public List<DataFile> findbyInfoid(String infoId) {
         return dataFileMapper.findbyInfoid(infoId);
     }
+
+    public List<DataFile> findbyInfoidAndKeyword(String infoId,String keyword) {
+        DataFile dataFile = new DataFile();
+        dataFile.setInfoId(infoId);
+        dataFile.setKeyword(keyword);
+        return dataFileMapper.findbyInfoidAndKeyword(dataFile);
+    }
 }

@@ -40,7 +40,8 @@
                     <th>年级</th>
                     <th>班级</th>
                     <th>专业</th>
-
+                    <th>学生数</th>
+                    <th>作业数</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -53,6 +54,8 @@
                     <td th:text="${bean.grade}"></td>
                     <td th:text="${bean.clazz}"></td>
                     <td th:text="${bean.profession}"></td>
+                    <td th:text="${bean.studentCount}"></td>
+                    <td th:text="${bean.workCount}"></td>
                     <td >
                         <a th:href="@{'/admin/tech/course/' + ${bean.id}}" class="btn btn-info btn-sm" >编辑</a>
                         <a th:href="@{'/admin/tech/course/editStudent/' + ${bean.id}}" class="btn btn-info btn-sm" >导入学生</a>

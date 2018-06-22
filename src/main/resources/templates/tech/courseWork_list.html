@@ -6,7 +6,7 @@
     <title>页面模板</title>
 </head>
 <body>
-
+<input type="hidden" id="courseId" th:value="${courseId}">
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-9">
         <br>
@@ -41,6 +41,8 @@
                     <th>分数</th>
                     <th>截止日期</th>
                     <th>作业文件</th>
+                    <th>已提交人数</th>
+                    <th>状态</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -51,8 +53,12 @@
                     <td th:text="${bean.score}"></td>
                     <td th:text="${bean.dateLimit}"></td>
                     <td><a th:href="${bean.file.path}" th:attr="download=${bean.file.name}" th:text="${bean.file.name}"></a></td>
+                    <td th:text="${bean.submitCount}"></td>
+                    <td th:text="${bean.state == '1'?'已发布':'未发布'}"></td>
                     <td >
                         <a th:href="@{'/admin/tech/courseWork/edit/' + ${bean.id}+'?courseId='+${courseId}}" class="btn btn-info btn-sm" >编辑</a>
+                        <a th:if="${bean.state != '1'}" href="javascript:void(0)" th:onclick="'javascript:publishWork(\''+${bean.id}+'\')'" class="btn btn-info btn-sm" >发布作业</a>
+                        <a th:href="@{'/admin/tech/courseWork/workSubmitStudentList/' + ${bean.id}+'?courseId='+${courseId}}" class="btn btn-info btn-sm" >提交情况</a>
                         <button class="btn btn-danger btn-sm" th:onclick="'deleteInfo(\''+'/admin/tech/courseWork/' + ${bean.id} + '\')'">删除</button>
                     </td>
                 </tr>
@@ -70,6 +76,28 @@
 <!--页面js-->
 <div th:include="common/header::common_javascript">
 </div>
+
+<script>
+
+    $(document).ready(()=>{
+
+    });
+
+    const publishWork = workId=>{
+        $.ajax({
+            url: '/admin/tech/courseWork/ajaxUpdate',
+            type: 'PUT',
+            data:{
+                id:workId,
+                state:1,
+                courseId:$("#courseId").val()
+            },
+            success: function( response ) {
+                location.reload();
+            }
+        });
+    }
+</script>
 
 </body>
 </html>

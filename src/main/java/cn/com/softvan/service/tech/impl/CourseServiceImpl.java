@@ -10,6 +10,7 @@ import cn.com.softvan.mapper.tech.CourseMapper;
 import cn.com.softvan.mapper.tech.CourseStudentMapper;
 import cn.com.softvan.service.system.SystemUserService;
 import cn.com.softvan.service.tech.CourseService;
+import cn.com.softvan.service.tech.CourseWorkService;
 import cn.com.softvan.vo.system.SystemUserVO;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +38,9 @@ public class CourseServiceImpl extends AbstractService<Course> implements Course
     private CourseStudentMapper courseStudentMapper;
 
     @Autowired
+    private CourseWorkService courseWorkService;
+
+    @Autowired
     private CourseMapper courseMapper;
 
     @Override
@@ -59,6 +63,10 @@ public class CourseServiceImpl extends AbstractService<Course> implements Course
         SystemUser user = (SystemUser) SecurityUtils.getSubject().getPrincipal();
         condition.createCriteria().andCondition("teacher_id = '" + user.getId()+ "'");
         List<Course> list = findByCondition(condition);
+        for(Course course:list){
+            course.setWorkCount(courseWorkService.findList(course.getId()).size());
+            course.setStudentCount(findCourseStudent(course.getId()).size());
+        }
         return list;
     }
 
@@ -77,6 +85,11 @@ public class CourseServiceImpl extends AbstractService<Course> implements Course
 
     @Override
     public List<Course> findStudentCourses(Integer studentId) {
-        return courseMapper.selectStudentCourses(studentId);
+        List<Course> courses = courseMapper.selectStudentCourses(studentId);
+        for(Course course:courses){
+            course.setWorkCount(courseWorkService.findStudentWorkList(course.getId()).size());
+            course.setStudentCount(findCourseStudent(course.getId()).size());
+        }
+        return courses;
     }
 }

@@ -1,6 +1,7 @@
 package cn.com.softvan.entity.system;
 
 import cn.com.softvan.entity.BaseEntity;
+import cn.com.softvan.entity.tech.CourseWorkStudent;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -72,6 +73,10 @@ public class SystemUser extends BaseEntity{
 
     @Transient
     List<Integer> roles;
+
+
+    @Transient
+    private CourseWorkStudent studentSubmitWork = new CourseWorkStudent();
 
 
 }

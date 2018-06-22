@@ -9,6 +9,7 @@
     <result column="course_id" jdbcType="VARCHAR" property="courseId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="score" jdbcType="VARCHAR" property="score" />
+    <result column="state" jdbcType="VARCHAR" property="state" />
     <result column="file_id" jdbcType="VARCHAR" property="fileId" />
     <result column="date_limit" jdbcType="VARCHAR" property="dateLimit" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />

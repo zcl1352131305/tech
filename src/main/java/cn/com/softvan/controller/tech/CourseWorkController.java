@@ -1,12 +1,16 @@
 package cn.com.softvan.controller.tech;
 
 import cn.com.softvan.controller.BaseController;
+import cn.com.softvan.entity.data.DataFile;
 import cn.com.softvan.entity.system.SystemUser;
 import cn.com.softvan.entity.tech.Course;
 import cn.com.softvan.entity.tech.CourseWork;
+import cn.com.softvan.entity.tech.CourseWorkStudent;
 import cn.com.softvan.enums.ResultEnum;
+import cn.com.softvan.service.data.DataFileService;
 import cn.com.softvan.service.tech.CourseService;
 import cn.com.softvan.service.tech.CourseWorkService;
+import cn.com.softvan.service.tech.CourseWorkStudentService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.shiro.SecurityUtils;
@@ -18,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +42,13 @@ public class CourseWorkController extends BaseController<CourseWork, Integer>{
 
     @Autowired
     private CourseWorkService courseWorkService;
+
+    @Autowired
+    private CourseWorkStudentService courseWorkStudentService;
+
+    @Autowired
+    private DataFileService dataFileService;
+
 
 
     @GetMapping(value = "/workList/{page}")
@@ -81,24 +93,105 @@ public class CourseWorkController extends BaseController<CourseWork, Integer>{
 
 
     @PostMapping(value = "/saveUpdate")
-    public ModelAndView saveUpdateSave(CourseWork bean,String[] files, RedirectAttributes attributes){
-        if(null != files){
-            bean.setFileId(files[files.length-1]);
+    public ModelAndView saveUpdateSave(CourseWork bean,String[] courseWorkFiles, RedirectAttributes attributes){
+        if(null != courseWorkFiles){
+            bean.setFileId(Integer.parseInt(courseWorkFiles[courseWorkFiles.length-1]));
         }
         courseWorkService.save(bean);
+
+        if(null != courseWorkFiles){
+            DataFile file = dataFileService.findById(courseWorkFiles[courseWorkFiles.length-1]);
+            file.setInfoId(bean.getId()+"");
+            dataFileService.update(file);
+        }
         attributes.addFlashAttribute("msg", ResultEnum.SUCCESS.getMsg());
         return new ModelAndView("redirect:/admin/".concat(courseWorkService.getTemplatePath()).concat("/workList/1?courseId="+bean.getCourseId()));
     }
 
     @PutMapping(value = "/saveUpdate")
-    public ModelAndView saveUpdateUpdate(CourseWork bean, String[] files, RedirectAttributes attributes){
-        if(null != files){
-            bean.setFileId(files[files.length-1]);
+    public ModelAndView saveUpdateUpdate(CourseWork bean, String[] courseWorkFiles, RedirectAttributes attributes){
+        if(null != courseWorkFiles){
+            bean.setFileId(Integer.parseInt(courseWorkFiles[courseWorkFiles.length-1]));
         }
         courseWorkService.update(bean);
+        if(null != courseWorkFiles){
+            DataFile file = dataFileService.findById(courseWorkFiles[courseWorkFiles.length-1]);
+            file.setInfoId(bean.getId()+"");
+            dataFileService.update(file);
+        }
         attributes.addFlashAttribute("msg", ResultEnum.SUCCESS.getMsg());
         return new ModelAndView("redirect:/admin/".concat(courseWorkService.getTemplatePath()).concat("/workList/1?courseId="+bean.getCourseId()));
     }
 
+    @PutMapping(value = "/ajaxUpdate")
+    @ResponseBody
+    public void saveUpdateUpdate(CourseWork bean, RedirectAttributes attributes){
+        courseWorkService.update(bean);
+    }
+
+
+
+    @GetMapping(value = "/workSubmitStudentList/{workId}")
+    public ModelAndView list(HttpServletRequest request,
+                             @PathVariable Integer workId,
+                             String courseId,
+                             Map<String, Object> map){
+
+        if(null == courseId || "null".equals(courseId)){
+            courseId = (String ) request.getSession().getAttribute("workCourseId");
+        }
+        else{
+            request.getSession().setAttribute("workCourseId",courseId);
+        }
+        List<SystemUser> list = courseWorkService.getWorkSubmitStudentsDetailList(workId);
+        map.put("dataList", list);
+        map.put("courseId", courseId);
+        return new ModelAndView(courseWorkService.getTemplatePath().concat("_submit_list"), map);
+    }
+
+
+    @GetMapping(value = "/checkedEdit/{id}")
+    public ModelAndView saveUpdateUpdate(@PathVariable(value = "id", required = false)Integer id,
+                                         String courseId,
+                                         Map<String, Object> map){
+        if(null == courseId || "null".equals(courseId)){
+            courseId = (String ) request.getSession().getAttribute("workCourseId");
+        }
+        else{
+            request.getSession().setAttribute("workCourseId",courseId);
+        }
+        CourseWorkStudent bean =  courseWorkStudentService.findById(id);
+        CourseWork work = courseWorkService.findById(bean.getWorkId());
+        map.put("bean", bean);
+        map.put("work", work);
+        map.put("courseId", courseId);
+        return new ModelAndView(courseWorkService.getTemplatePath().concat("_submit_checked"), map);
+    }
+
+    @PutMapping(value = "/checkedWork")
+    public ModelAndView saveUpdateUpdate(CourseWorkStudent bean,
+                                         String courseId,
+                                         String[] courseWorkStudentCheckedFiles ,
+                                         RedirectAttributes attributes){
+        if(null == courseId || "null".equals(courseId)){
+            courseId = (String ) request.getSession().getAttribute("workCourseId");
+        }
+        else{
+            request.getSession().setAttribute("workCourseId",courseId);
+        }
+        if(null != courseWorkStudentCheckedFiles){
+            bean.setCheckedFileId(Integer.parseInt(courseWorkStudentCheckedFiles[courseWorkStudentCheckedFiles.length-1]));
+            bean.setDateChecked(new Date());
+        }
+        courseWorkStudentService.update(bean);
+
+        if(null != courseWorkStudentCheckedFiles){
+            DataFile file = dataFileService.findById(courseWorkStudentCheckedFiles[courseWorkStudentCheckedFiles.length-1]);
+            file.setInfoId(bean.getId()+"");
+            dataFileService.update(file);
+        }
+        attributes.addFlashAttribute("msg", ResultEnum.SUCCESS.getMsg());
+        return new ModelAndView("redirect:/admin/".concat(courseWorkService.getTemplatePath()).concat("/workSubmitStudentList/"+bean.getWorkId()+"?courseId="+courseId));
+    }
 
 }

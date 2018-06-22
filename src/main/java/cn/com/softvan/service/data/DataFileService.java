@@ -9,4 +9,5 @@ import java.util.List;
 public interface DataFileService extends Service<DataFile> {
     void save(DataFile dataFile);
     List<DataFile> findbyInfoid(String infoId);
+    List<DataFile> findbyInfoidAndKeyword(String infoId,String keyword);
 }

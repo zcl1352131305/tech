@@ -24,6 +24,14 @@
         where t1.info_id = #{infoId}
     </select>
 
+    <select id="findbyInfoidAndKeyword"  parameterType="cn.com.softvan.entity.data.DataFile" resultMap="BaseResultMap" >
+        select
+        t1.*
+        from  t_data_file t1
+        where t1.info_id = #{infoId}
+        and t1.keyword = #{keyword}
+    </select>
+
 
 
 </mapper>

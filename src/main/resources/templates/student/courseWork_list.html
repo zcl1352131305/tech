@@ -15,10 +15,10 @@
                 <a href="/index">首页</a>
             </li>
             <li>
-                <a th:href="'/admin/student/tech/course/list/1'">课程管理</a>
+                <a th:href="'/admin/tech/student/course/list/1?courseId='+${courseId}">我的课程</a>
             </li>
             <li class="active">
-                <strong>作业管理</strong>
+                <strong>课程作业</strong>
             </li>
         </ol>
 
@@ -39,7 +39,10 @@
                     <th>名称</th>
                     <th>分数</th>
                     <th>截止日期</th>
-                    <th>作业文件（点击下载）</th>
+                    <th>作业原件</th>
+                    <th>我提交的</th>
+                    <th>批改后的</th>
+                    <th>状态</th>
                     <th>操作</th>
                 </tr>
                 </thead>
@@ -49,9 +52,18 @@
                     <td th:text="${bean.name}"></td>
                     <td th:text="${bean.score}"></td>
                     <td th:text="${bean.dateLimit}"></td>
-                    <td><a th:href="${bean.file.path}" th:attr="download=${bean.file.name}" th:text="${bean.file.name}"></a></td>
+                    <td><a th:if="${null != bean.file}" th:href="${bean.file.path}" th:attr="download=${bean.file.name}" th:text="${null != bean.file.name?'下载':''}" ></a></td>
+                    <td><a th:if="${null != bean.studentWork && null != bean.studentWork.submitFile}"  th:href="${bean.studentWork.submitFile.path}" th:attr="download=${bean.studentWork.submitFile.name}"  th:text="${null != bean.studentWork.submitFile.name?'下载':''}" ></a></td>
+                    <td><a th:if="${null != bean.studentWork && null != bean.studentWork.checkedFile}"  th:href="${bean.studentWork.checkedFile.path}" th:attr="download=${bean.studentWork.checkedFile.name}"  th:text="${null != bean.studentWork.checkedFile.name?'下载':''}" >下</a></td>
+                    <td>
+                        <span th:if="${null != bean.studentWork.checkedFile.name}">已批改</span>
+                        <span th:if="${null == bean.studentWork.checkedFile.name && bean.workClose}">已到截止日期</span>
+                        <span th:if="${null == bean.studentWork.checkedFile.name && null == bean.studentWork.submitFile.name && !bean.workClose}">未提交</span>
+                        <span th:if="${null == bean.studentWork.checkedFile.name && null != bean.studentWork.submitFile.name && !bean.workClose}">未批改</span>
+                    </td>
                     <td >
-                        <a th:href="@{'/admin/tech/courseWork/doWork/' + ${bean.id}+'?courseId='+${courseId}}" class="btn btn-info btn-sm" >提交作业</a>
+                        <a th:if="${!bean.workClose && null == bean.studentWork.checkedFile.name }" th:href="@{'/admin/tech/student/courseWork/submitEdit/' + ${bean.id}+'?courseId='+${courseId}}" class="btn btn-info btn-sm" >提交作业</a>
+                        <a th:if="${null != bean.studentWork.checkedFile.name}" class="btn btn-default btn-sm" disabled >已批改</a>
                     </td>
                 </tr>
                 </tbody>

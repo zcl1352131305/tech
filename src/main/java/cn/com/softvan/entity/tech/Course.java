@@ -29,4 +29,10 @@ public class Course  extends BaseEntity {
     private String teacherName;
 
 
+    @Transient
+    private Integer workCount;
+    @Transient
+    private Integer studentCount;
+
+
 }

@@ -9,4 +9,6 @@ import java.util.List;
 @Component
 public interface DataFileMapper extends Mapper<DataFile>{
     List<DataFile> findbyInfoid(String infoId);
+
+    List<DataFile> findbyInfoidAndKeyword(DataFile entity);
 }

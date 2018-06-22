@@ -28,7 +28,8 @@ public class DataFileController extends BaseController<DataFile,Integer> {
         DataFile dataFile = new DataFile();
         dataFile.setInfoId(infoId);
         dataFile.setKeyword(keyword);
-        List<DataFile> files = dataFileService.findbyInfoid(infoId);
+        //List<DataFile> files = dataFileService.findbyInfoid(infoId);
+        List<DataFile> files = dataFileService.findbyInfoidAndKeyword(infoId,keyword);
         return ResultUtil.success("查询成功", files);
     }
 
