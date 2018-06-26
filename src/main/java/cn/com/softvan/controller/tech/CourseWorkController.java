@@ -100,6 +100,9 @@ public class CourseWorkController extends BaseController<CourseWork, Integer>{
         courseWorkService.save(bean);
 
         if(null != courseWorkFiles){
+            for(int i = 0;i<courseWorkFiles.length-1;i++){
+                dataFileService.deleteById(courseWorkFiles[i]);
+            }
             DataFile file = dataFileService.findById(courseWorkFiles[courseWorkFiles.length-1]);
             file.setInfoId(bean.getId()+"");
             dataFileService.update(file);
@@ -115,6 +118,9 @@ public class CourseWorkController extends BaseController<CourseWork, Integer>{
         }
         courseWorkService.update(bean);
         if(null != courseWorkFiles){
+            for(int i = 0;i<courseWorkFiles.length-1;i++){
+                dataFileService.deleteById(courseWorkFiles[i]);
+            }
             DataFile file = dataFileService.findById(courseWorkFiles[courseWorkFiles.length-1]);
             file.setInfoId(bean.getId()+"");
             dataFileService.update(file);
@@ -130,7 +136,14 @@ public class CourseWorkController extends BaseController<CourseWork, Integer>{
     }
 
 
-
+    /**
+     * 学生作业提交列表
+     * @param request
+     * @param workId
+     * @param courseId
+     * @param map
+     * @return
+     */
     @GetMapping(value = "/workSubmitStudentList/{workId}")
     public ModelAndView list(HttpServletRequest request,
                              @PathVariable Integer workId,
@@ -150,6 +163,13 @@ public class CourseWorkController extends BaseController<CourseWork, Integer>{
     }
 
 
+    /**
+     * 批改作业编辑
+     * @param id
+     * @param courseId
+     * @param map
+     * @return
+     */
     @GetMapping(value = "/checkedEdit/{id}")
     public ModelAndView saveUpdateUpdate(@PathVariable(value = "id", required = false)Integer id,
                                          String courseId,
@@ -180,6 +200,9 @@ public class CourseWorkController extends BaseController<CourseWork, Integer>{
             request.getSession().setAttribute("workCourseId",courseId);
         }
         if(null != courseWorkStudentCheckedFiles){
+            for(int i = 0;i<courseWorkStudentCheckedFiles.length-1;i++){
+                dataFileService.deleteById(courseWorkStudentCheckedFiles[i]);
+            }
             bean.setCheckedFileId(Integer.parseInt(courseWorkStudentCheckedFiles[courseWorkStudentCheckedFiles.length-1]));
             bean.setDateChecked(new Date());
         }

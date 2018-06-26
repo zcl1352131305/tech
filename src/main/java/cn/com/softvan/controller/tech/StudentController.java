@@ -142,6 +142,9 @@ public class StudentController {
     public ModelAndView saveUpdateSave(Integer workId, Integer courseId,String[] courseWorkStudentSubmitFiles, RedirectAttributes attributes){
         Integer fileId = null;
         if(null != courseWorkStudentSubmitFiles){
+            for(int i = 0;i<courseWorkStudentSubmitFiles.length-1;i++){
+                dataFileService.deleteById(courseWorkStudentSubmitFiles[i]);
+            }
             fileId = Integer.parseInt(courseWorkStudentSubmitFiles[courseWorkStudentSubmitFiles.length-1]);
         }
         courseWorkService.submitWork(workId,fileId);
