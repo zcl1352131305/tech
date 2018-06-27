@@ -22,9 +22,18 @@ public interface CourseWorkService extends Service<CourseWork> {
      */
     List<CourseWork> findList(Integer courseId);
 
-
+    /**
+     * 获取学生作业提交情况
+     * @param workId
+     * @return
+     */
     List<SystemUser> getWorkSubmitStudentsDetailList(Integer workId);
 
+    /**
+     * 获取学生完成作业情况
+     * @param id
+     * @return
+     */
     CourseWorkStudent getCourseWorkStudentById(Integer id);
 
     void updateCourseWorkStudent(CourseWorkStudent courseWorkStudent);
