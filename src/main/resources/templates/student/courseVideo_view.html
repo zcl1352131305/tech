@@ -1,0 +1,117 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>视频播放页面</title>
+    <div th:include="common/header::public_header"></div>
+    <link href="/static/css/plugins/videojs/video-js.css" rel="stylesheet">
+    <style>
+        .video-js .vjs-tech{
+            position: relative;
+        }
+    </style>
+</head>
+<body  class="gray-bg">
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-9">
+        <br>
+        <ol class="breadcrumb">
+            <li>
+                <a href="/index">首页</a>
+            </li>
+            <li>
+                <a th:href="'/admin/tech/student/course/list/1'">我的课程</a>
+            </li>
+            <li>
+                <a th:href="'/admin/tech/student/courseVideo/videoList/1?courseId='+${courseId}">课程视频</a>
+            </li>
+            <li class="active">
+                <strong>观看视频</strong>
+            </li>
+        </ol>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="col-lg-8">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5 th:text="${video.name}"></h5>
+                </div>
+                <div class="ibox-content">
+                    <video id="my-video" class="video-js" controls preload="auto" data-setup="{}" style="width: 100%;height: 100%" >
+                        <source th:src="${video.videoFile.path}" type="video/mp4">
+                        <p class="vjs-no-js"> To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a> </p>
+                    </video>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>视频信息</h5>
+                </div>
+                <div class="ibox-content">
+                    <div id="detailInfoPanel" class="row" style="overflow-y: scroll;height: 650px;">
+                        <div class="col-lg-5">
+                            <img th:src="${video.headImgFile.path}" style="width: 100%" >
+                        </div>
+                        <div class="col-lg-7">
+                            <h3 th:text="${video.name}"></h3>
+                            <p>啊阿桑的歌阿斯顿gasket的乖哈岁的客户；按时到货按时到货安是好啦手机号假按揭很拉风咖啡号法案，的哈拉省的哈拉省的哈市两岸三地和</p>
+                        </div>
+                        <div class="col-lg-12" style="margin-top: 20px">
+                            <h4>更多视频</h4>
+                            <table class="table">
+                                <tr th:each="videoBean,stat : ${allVideo}">
+                                    <td th:text="${videoBean.name}"></td>
+                                    <td th:text="${videoBean.createDate}"></td>
+                                    <td><a class="btn btn-sm btn-primary" th:href="@{'/admin/tech/student/courseVideo/view/' + ${videoBean.id}+'?courseId='+${courseId}}">立即学习</a></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--页面js-->
+<div th:include="common/header::common_javascript">
+</div>
+
+
+<script src="/static/js/plugin/videojs/video.min.js"></script>
+<script src="http://vjs.zencdn.net/5.19/lang/zh-CN.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var myPlayer = videojs('my-video');
+        videojs("my-video").ready(function(){
+            setTimeout(()=>{
+
+                let height = $(".vjs-tech").height();
+                let playHeight = $(".vjs-control-bar").height();
+                $(".vjs-control-bar").css("top",height-playHeight);
+                $("#detailInfoPanel").height(height);
+
+            },50);
+
+            let myPlayer = this;
+            myPlayer.play();
+
+
+            let interval = setInterval(()=>{
+                let playTime = myPlayer.currentTime();
+                console.log(playTime);
+            },1000);
+        });
+    });
+
+</script>
+</body>
+</html>

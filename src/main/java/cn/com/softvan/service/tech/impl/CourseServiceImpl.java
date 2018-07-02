@@ -10,6 +10,7 @@ import cn.com.softvan.mapper.tech.CourseMapper;
 import cn.com.softvan.mapper.tech.CourseStudentMapper;
 import cn.com.softvan.service.system.SystemUserService;
 import cn.com.softvan.service.tech.CourseService;
+import cn.com.softvan.service.tech.CourseVideoService;
 import cn.com.softvan.service.tech.CourseWorkService;
 import cn.com.softvan.vo.system.SystemUserVO;
 import org.apache.shiro.SecurityUtils;
@@ -39,6 +40,9 @@ public class CourseServiceImpl extends AbstractService<Course> implements Course
 
     @Autowired
     private CourseWorkService courseWorkService;
+
+    @Autowired
+    private CourseVideoService courseVideoService;
 
     @Autowired
     private CourseMapper courseMapper;
@@ -89,6 +93,7 @@ public class CourseServiceImpl extends AbstractService<Course> implements Course
         for(Course course:courses){
             course.setWorkCount(courseWorkService.findStudentWorkList(course.getId()).size());
             course.setStudentCount(findCourseStudent(course.getId()).size());
+            course.setVideoCount(courseVideoService.findStudentVideoList(course.getId()).size());
         }
         return courses;
     }

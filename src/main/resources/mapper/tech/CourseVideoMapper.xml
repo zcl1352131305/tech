@@ -9,6 +9,7 @@
     <result column="course_id" jdbcType="VARCHAR" property="courseId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="file_id" jdbcType="VARCHAR" property="fileId" />
+    <result column="head_img_file_id" jdbcType="VARCHAR" property="headImgFileId" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
     <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />

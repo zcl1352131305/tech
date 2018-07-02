@@ -64,8 +64,10 @@
                             <span th:text="${bean.studentCount}"></span>
                         </div>
                         <div class="col-sm-3">
-                            <div class="font-bold">视频</div>
-                            12
+                            <div class="font-bold">
+                                <a th:href="${'/admin/tech/student/courseVideo/videoList/1?courseId='+bean.id}">视频</a>
+                            </div>
+                            <span th:text="${bean.videoCount}"></span>
                         </div>
                         <div class="col-sm-3">
                             <div class="font-bold">
@@ -73,7 +75,7 @@
                                     作业
                                 </a>
                             </div>
-                            <a th:href="${'/admin/tech/student/courseWork/workList/1?courseId='+bean.id}" th:text="${bean.workCount}"></a>
+                            <span th:text="${bean.workCount}"></span>
                         </div>
                         <div class="col-sm-3 text-right">
                             <div class="font-bold">学分</div>

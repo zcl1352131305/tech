@@ -32,6 +32,8 @@ public class Course  extends BaseEntity {
     @Transient
     private Integer workCount;
     @Transient
+    private Integer videoCount;
+    @Transient
     private Integer studentCount;
 
 

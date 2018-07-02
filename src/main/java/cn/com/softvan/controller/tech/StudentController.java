@@ -3,12 +3,14 @@ package cn.com.softvan.controller.tech;
 import cn.com.softvan.entity.data.DataFile;
 import cn.com.softvan.entity.system.SystemUser;
 import cn.com.softvan.entity.tech.Course;
+import cn.com.softvan.entity.tech.CourseVideo;
 import cn.com.softvan.entity.tech.CourseWork;
 import cn.com.softvan.entity.tech.CourseWorkStudent;
 import cn.com.softvan.enums.ResultEnum;
 import cn.com.softvan.service.data.DataFileService;
 import cn.com.softvan.service.system.SystemUserService;
 import cn.com.softvan.service.tech.CourseService;
+import cn.com.softvan.service.tech.CourseVideoService;
 import cn.com.softvan.service.tech.CourseWorkService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -35,6 +37,9 @@ public class StudentController {
 
     @Autowired
     private CourseWorkService courseWorkService;
+
+    @Autowired
+    private CourseVideoService courseVideoService;
 
     @Autowired
     private DataFileService dataFileService;
@@ -150,6 +155,79 @@ public class StudentController {
         courseWorkService.submitWork(workId,fileId);
         attributes.addFlashAttribute("msg", ResultEnum.SUCCESS.getMsg());
         return new ModelAndView("redirect:/admin/tech/".concat(getTemplatePath()).concat("courseWork/workList/1?courseId="+courseId));
+    }
+
+
+    /**
+     * 课程视频列表
+     * @param request
+     * @param page
+     * @param size
+     * @param courseId
+     * @param map
+     * @return
+     */
+    @GetMapping(value = "/courseVideo/videoList/{page}")
+    public ModelAndView videoList(HttpServletRequest request, @PathVariable(value = "page")Integer page,
+                             @RequestParam(value = "size", defaultValue = "15")Integer size,
+                             String courseId,
+                             Map<String, Object> map){
+
+        if(null == courseId || "null".equals(courseId)){
+            courseId = (String ) request.getSession().getAttribute("studentWorkCourseId");
+        }
+        else{
+            request.getSession().setAttribute("studentWorkCourseId",courseId);
+        }
+        Integer courseIdI = Integer.parseInt(courseId);
+
+        PageHelper.startPage(page, size);
+        List<CourseVideo> list = courseVideoService.findStudentVideoList(courseIdI);
+        PageInfo pageInfo = new PageInfo<>(list);
+        map.put("pageInfo", pageInfo);
+
+        map.put("courseId", courseId);
+        return new ModelAndView(getTemplatePath().concat("courseVideo_list"), map);
+    }
+
+
+    /**
+     * 学生观看视频
+     * @param request
+     * @param videoId
+     * @param courseId
+     * @param map
+     * @return
+     */
+    @GetMapping(value = "/courseVideo/view/{videoId}")
+    public ModelAndView videoView(HttpServletRequest request, @PathVariable Integer videoId,
+                                   String courseId,
+                                   Map<String, Object> map){
+
+        if(null == courseId || "null".equals(courseId)){
+            courseId = (String ) request.getSession().getAttribute("studentWorkCourseId");
+        }
+        else{
+            request.getSession().setAttribute("studentWorkCourseId",courseId);
+        }
+
+        CourseVideo video = courseVideoService.findById(videoId);
+        DataFile file = dataFileService.findById(video.getFileId());
+        if(null != file){
+            video.setVideoFile(file);
+        }
+
+        file = dataFileService.findById(video.getHeadImgFileId());
+        if(null != file){
+            video.setHeadImgFile(file);
+        }
+
+        List<CourseVideo> list = courseVideoService.findStudentVideoList(Integer.parseInt(courseId));
+
+        map.put("video",video);
+        map.put("allVideo",list);
+        map.put("courseId", courseId);
+        return new ModelAndView(getTemplatePath().concat("courseVideo_view"), map);
     }
 
 

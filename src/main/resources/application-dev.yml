@@ -20,7 +20,6 @@ logging:
 server:
   port: 8082
 
-
 # 系统配置
 audit:
   upload:
