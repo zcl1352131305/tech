@@ -3,10 +3,7 @@ package cn.com.softvan.service.tech;
 
 import cn.com.softvan.base.Service;
 import cn.com.softvan.entity.system.SystemUser;
-import cn.com.softvan.entity.tech.CourseVideo;
-import cn.com.softvan.entity.tech.CourseVideoQuestion;
-import cn.com.softvan.entity.tech.CourseWork;
-import cn.com.softvan.entity.tech.CourseWorkStudent;
+import cn.com.softvan.entity.tech.*;
 
 import java.util.List;
 
@@ -22,4 +19,8 @@ public interface CourseVideoService extends Service<CourseVideo> {
     List<CourseVideoQuestion> getVideoQuestions(Integer videoId);
 
     void saveVideoQuestions(Integer videoId, List<CourseVideoQuestion> questions);
+
+    CourseVideoStudent getStudentWatched(Integer videoId);
+
+    void updateStudentWatchedProgress(Integer videoId, Integer progress, Integer latestWatched);
 }

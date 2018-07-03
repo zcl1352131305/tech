@@ -12,6 +12,7 @@ import cn.com.softvan.service.system.SystemUserService;
 import cn.com.softvan.service.tech.CourseService;
 import cn.com.softvan.service.tech.CourseVideoService;
 import cn.com.softvan.service.tech.CourseWorkService;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.apache.shiro.SecurityUtils;
@@ -221,6 +222,8 @@ public class StudentController {
         if(null != file){
             video.setHeadImgFile(file);
         }
+        video.setQuestions(courseVideoService.getVideoQuestions(video.getId()));
+        video.setStudentWatched(courseVideoService.getStudentWatched(video.getId()));
 
         List<CourseVideo> list = courseVideoService.findStudentVideoList(Integer.parseInt(courseId));
 
@@ -228,6 +231,24 @@ public class StudentController {
         map.put("allVideo",list);
         map.put("courseId", courseId);
         return new ModelAndView(getTemplatePath().concat("courseVideo_view"), map);
+    }
+
+
+    /**
+     * 更新视频观看进度
+     * @param videoId
+     * @param progress
+     * @param attributes
+     * @return
+     */
+    @PostMapping(value = "/courseVideo/updateWatchedProgress")
+    @ResponseBody
+    public JSONObject saveUpdateSave(Integer videoId, String progress,Integer latestWatched, RedirectAttributes attributes){
+        String[] pg = progress.split("\\.");
+        courseVideoService.updateStudentWatchedProgress(videoId,Integer.parseInt(pg[0]),latestWatched);
+        JSONObject json = new JSONObject();
+        json.put("msg", ResultEnum.SUCCESS.getMsg());
+        return json;
     }
 
 

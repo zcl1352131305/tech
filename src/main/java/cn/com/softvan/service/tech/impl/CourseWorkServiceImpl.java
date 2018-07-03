@@ -82,7 +82,7 @@ public class CourseWorkServiceImpl extends AbstractService<CourseWork> implement
     }
 
     /**
-     * 获取该作业的学生提交情况
+     * 获取该作业的学生提交情况（教师）
      * @param workId
      * @return
      */

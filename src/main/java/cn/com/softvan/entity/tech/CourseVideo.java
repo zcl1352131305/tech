@@ -35,4 +35,9 @@ public class CourseVideo extends BaseEntity {
     @Transient
     private List<CourseVideoQuestion> questions;
 
+    //学生登陆时查看
+    @Transient
+    private CourseVideoStudent studentWatched = new CourseVideoStudent();
+
+
 }

@@ -68,7 +68,12 @@
                             <table class="table">
                                 <tr th:each="videoBean,stat : ${allVideo}">
                                     <td th:text="${videoBean.name}"></td>
-                                    <td th:text="${videoBean.createDate}"></td>
+                                    <td >
+                                        <small th:text="'当前进度：'+${videoBean.studentWatched.progress}+'%'"></small>
+                                        <div class="progress progress-mini">
+                                            <div th:style="'width: '+${videoBean.studentWatched.progress}+'%;'" class="progress-bar"></div>
+                                        </div>
+                                    </td>
                                     <td><a class="btn btn-sm btn-primary" th:href="@{'/admin/tech/student/courseVideo/view/' + ${videoBean.id}+'?courseId='+${courseId}}">立即学习</a></td>
                                 </tr>
                             </table>
@@ -88,15 +93,19 @@
 
 <script src="/static/js/plugin/videojs/video.min.js"></script>
 <script src="http://vjs.zencdn.net/5.19/lang/zh-CN.js"></script>
-<script type="text/javascript">
+<script th:inline="javascript">
+    let questionInterval;
     $(document).ready(function () {
-        var myPlayer = videojs('my-video');
+        const videoQuestions = [[${video.questions}]];
+        console.log(videoQuestions);
+
+        var videoJs = videojs('my-video');
         videojs("my-video").ready(function(){
             setTimeout(()=>{
 
                 let height = $(".vjs-tech").height();
                 let playHeight = $(".vjs-control-bar").height();
-                $(".vjs-control-bar").css("top",height-playHeight);
+                $(".vjs-control-bar").css("top",(height-playHeight));
                 $("#detailInfoPanel").height(height);
 
             },50);
@@ -104,13 +113,114 @@
             let myPlayer = this;
             myPlayer.play();
 
+            //恢复上一次观看进度
+            const watched = [[${video.studentWatched}]];
+            if(null != watched && watched.latestWatched > 0 ){
+                videoQuestions.forEach(question=>{
+                    if(question.alertTime < watched.latestWatched){
+                        question.isQuest = true;
+                    }
+                });
+                myPlayer.currentTime(watched.latestWatched);
+            }
 
-            let interval = setInterval(()=>{
-                let playTime = myPlayer.currentTime();
-                console.log(playTime);
-            },1000);
+            //定时器，弹出具体时间的问题以及更新观看进度
+            const getInterval = ()=>{
+                return setInterval(()=>{
+                    let playTime = myPlayer.currentTime();
+
+                    //每隔30秒记录观看进度
+                    let intPlayTime = parseInt(playTime)+1;
+                    if(intPlayTime%30 ==0 && intPlayTime != parseInt(myPlayer.duration()+1)){
+                        let progress = (intPlayTime/myPlayer.duration())*100;
+                        updateProgress(progress,intPlayTime)
+                    }
+                    //没有播放完毕才去判断是否有问题
+                    if(intPlayTime != parseInt(myPlayer.duration()+1)){
+                        videoQuestions.forEach(question=>{
+                            if(question.alertTime < playTime && !question.isQuest){
+                                question.isQuest = true;
+                                myPlayer.pause();
+                                clearInterval(questionInterval);
+                                alertQuestion(question);
+                            }
+                        });
+                    }
+
+                },1000);
+            };
+
+
+            const alertQuestion = question=>{
+                swal({
+                    title: ""+question.question,
+                    type: "warning",
+                    showCancelButton: true,
+                    allowOutsideClick:false,
+                    cancelButtonColor: "#DD6B55",
+                    confirmButtonColor: "#18a689",
+                    confirmButtonText: "正确",
+                    cancelButtonText: "错误"
+                }).then(()=>{ judgeAnswer(question,1); },()=>{ judgeAnswer(question,0); });
+            };
+
+            /**
+             * 判断答案
+             * @param question
+             * @param answer
+             */
+            const judgeAnswer=(question,answer)=>{
+                if(question.answer == answer){
+                    swal({
+                        title: "回答正确!",
+                        text: "太棒了！！！",
+                        type: "success"
+                    }).then(()=>{
+                        myPlayer.play();
+                        questionInterval = getInterval();
+                    });
+                }
+                else{
+                    swal({
+                        title: "回答错误!",
+                        text: "不要灰心，再接再厉！！！",
+                        type: "error"
+                    }).then(()=>{
+                        myPlayer.play();
+                        questionInterval = getInterval();
+                    });
+                }
+            };
+
+            /**
+             * 更新观看进度
+             * @param progress
+             */
+            const updateProgress = (progress,watchedTime)=>{
+                $.ajax({
+                    url: '/admin/tech/student/courseVideo/updateWatchedProgress',
+                    type: 'post',
+                    data:{
+                        videoId:[[${video.id}]],
+                        progress,
+                        latestWatched:watchedTime
+                    },
+                    success: function( response ) {
+                        console.log("进度保存成功！当前进度");
+                    }
+                });
+            };
+
+
+            myPlayer.on("ended", ()=>{ updateProgress(100,0); });
+
+            questionInterval = getInterval();
+
         });
     });
+
+
+
 
 </script>
 </body>

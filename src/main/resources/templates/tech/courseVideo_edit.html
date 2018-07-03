@@ -63,23 +63,32 @@
                                 <div class="col-sm-10">
                                     <table class="table table-bordered">
                                         <thead>
-                                            <tr>
-                                                <th>问题</th>
-                                                <th>是否正确</th>
-                                                <th>视频播放时弹出时间</th>
-                                            </tr>
+                                        <tr>
+                                            <th>问题</th>
+                                            <th>是否正确</th>
+                                            <th>视频播放时弹出时间</th>
+                                            <th>操作</th>
+                                        </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><input type="text" name="questionVal" placeholder="请输入问题" class="form-control"></td>
-                                                <td>
-                                                    <input type="hidden" name="answerVal">
-                                                    <button class="btn btn-sm btn-default right">正确</button>
-                                                    <button class="btn btn-sm btn-default false">错误</button>
-                                                </td>
-                                                <td><input type="number" name="questionVal" placeholder="请输入时间" class="form-control"></td>
-                                            </tr>
+                                        <tbody id="questions">
+                                        <tr th:each="question,stat : ${bean.questions}">
+                                            <td><input type="text" name="questionVal" placeholder="请输入问题" class="form-control" th:value="${question.question}"></td>
+                                            <td>
+                                                <input type="hidden" name="answerVal" th:value="${question.answer}">
+                                                <button type="button" th:class="'btn btn-sm '+ ${question.answer == '1'?'btn-primary':'btn-default'} " onclick="changeOption(this,'right')">正确</button>
+                                                <button type="button" th:class="'btn btn-sm '+ ${question.answer == '0'?'btn-danger':'btn-default'}" onclick="changeOption(this,'false')">错误</button>
+                                            </td>
+                                            <td><input type="number" name="alertTimeVal" placeholder="请输入播放时弹出时间（单位：秒）" class="form-control" th:value="${question.alertTime}"></td>
+                                            <td><button class="btn btn-danger" >删除</button></td>
+                                        </tr>
                                         </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <td colspan="4">
+                                                <button type="button" class="btn btn-success" onclick="addQuestion()" >新增问题</button>
+                                            </td>
+                                        </tr>
+                                        </tfoot>
 
                                     </table>
                                 </div>
@@ -110,9 +119,44 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-
-
     });
+
+    const addQuestion = ()=>{
+        let str = `
+            <tr>
+                <td><input type="text" name="questionVal" placeholder="请输入问题" class="form-control"></td>
+                <td>
+                    <input type="hidden" name="answerVal" value="1">
+                    <button type="button" class="btn btn-sm btn-primary" onclick="changeOption(this,'right')">正确</button>
+                    <button type="button" class="btn btn-sm btn-default" onclick="changeOption(this,'false')">错误</button>
+                </td>
+                <td>
+                    <input type="number" name="alertTimeVal" class="form-control" placeholder="请输入播放时弹出时间（单位：秒）" >
+                </td>
+                <td><button class="btn btn-danger" onclick="removeQuestion(this)" >删除</button></td>
+            </tr>
+        `;
+
+        $("#questions").append(str);
+    }
+
+    const changeOption = (element,option)=>{
+        if('right' == option){
+            $(element).next().attr('class','btn btn-sm btn-default');
+            $(element).attr('class','btn btn-sm btn-primary');
+            $(element).siblings("input").val("1");
+        }
+        if('false' == option){
+            $(element).prev().attr('class','btn btn-sm btn-default');
+            $(element).attr('class','btn btn-sm btn-danger');
+            $(element).siblings("input").val("0");
+        }
+    }
+
+    const removeQuestion = element=>{
+        $(element).parent().parent().remove();
+    }
+
 
 </script>
 </body>

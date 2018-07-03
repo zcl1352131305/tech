@@ -4,6 +4,7 @@ import cn.com.softvan.controller.BaseController;
 import cn.com.softvan.entity.data.DataFile;
 import cn.com.softvan.entity.system.SystemUser;
 import cn.com.softvan.entity.tech.CourseVideo;
+import cn.com.softvan.entity.tech.CourseVideoQuestion;
 import cn.com.softvan.entity.tech.CourseWork;
 import cn.com.softvan.entity.tech.CourseWorkStudent;
 import cn.com.softvan.enums.ResultEnum;
@@ -16,6 +17,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -104,23 +106,22 @@ public class CourseVideoController extends BaseController<CourseVideo, Integer>{
 
 
     @PostMapping(value = "/saveUpdate")
-    public ModelAndView saveUpdateSave(CourseVideo bean,String[] courseVideoFiless, RedirectAttributes attributes){
-        saveOrUpdate(bean,courseVideoFiless,"post");
+    public ModelAndView saveUpdateSave(CourseVideo bean,String[] courseVideoFiless, String[] questionVal, String[] answerVal, String[] alertTimeVal, RedirectAttributes attributes){
+        saveOrUpdate(bean,courseVideoFiless,questionVal,answerVal,alertTimeVal,"post");
         attributes.addFlashAttribute("msg", ResultEnum.SUCCESS.getMsg());
         return new ModelAndView("redirect:/admin/".concat(courseVideoService.getTemplatePath()).concat("/videoList/1?courseId="+bean.getCourseId()));
     }
 
     @PutMapping(value = "/saveUpdate")
-    public ModelAndView saveUpdateUpdate(CourseVideo bean, String[] courseVideoFiless, RedirectAttributes attributes){
-        saveOrUpdate(bean,courseVideoFiless,"put");
+    public ModelAndView saveUpdateUpdate(CourseVideo bean, String[] courseVideoFiless, String[] questionVal, String[] answerVal, String[] alertTimeVal,  RedirectAttributes attributes){
+        saveOrUpdate(bean,courseVideoFiless,questionVal,answerVal,alertTimeVal,"put");
         attributes.addFlashAttribute("msg", ResultEnum.SUCCESS.getMsg());
         return new ModelAndView("redirect:/admin/".concat(courseVideoService.getTemplatePath()).concat("/videoList/1?courseId="+bean.getCourseId()));
     }
 
-    private void saveOrUpdate(CourseVideo bean,String[] courseVideoFiless, String method){
+    private void saveOrUpdate(CourseVideo bean,String[] courseVideoFiless, String[] questionVal, String[] answerVal, String[] alertTimeVal, String method){
         List<String > headImgFiles = new ArrayList<>(), videoFiles = new ArrayList<>();
         if(null != courseVideoFiless){
-
             for(String fileId:courseVideoFiless){
                 DataFile file = dataFileService.findById(fileId);
                 String name = file.getName();
@@ -133,15 +134,12 @@ public class CourseVideoController extends BaseController<CourseVideo, Integer>{
                     videoFiles.add(fileId);
                 }
             }
-
             if(headImgFiles.size() > 0){
                 bean.setHeadImgFileId(Integer.parseInt(headImgFiles.get(headImgFiles.size()-1)));
             }
             if(videoFiles.size() > 0){
                 bean.setFileId(Integer.parseInt(videoFiles.get(videoFiles.size()-1)));
             }
-
-
         }
 
         if("post".equals(method)){
@@ -149,6 +147,21 @@ public class CourseVideoController extends BaseController<CourseVideo, Integer>{
         }
         else{
             courseVideoService.update(bean);
+        }
+
+        //保存问题列表
+        if(null != questionVal && null != answerVal && null != alertTimeVal){
+            List<CourseVideoQuestion> questions = new ArrayList<>();
+            for(int i=0; i<questionVal.length;i++){
+                if(!StringUtils.isEmpty(alertTimeVal[i])){
+                    CourseVideoQuestion question = new CourseVideoQuestion();
+                    question.setQuestion(questionVal[i]);
+                    question.setAnswer(StringUtils.isEmpty(answerVal[i])?"1":answerVal[i]);
+                    question.setAlertTime(Integer.parseInt(alertTimeVal[i]));
+                    questions.add(question);
+                }
+            }
+            courseVideoService.saveVideoQuestions(bean.getId(),questions);
         }
 
         updateSingleFile(headImgFiles,bean.getId()+"");

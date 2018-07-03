@@ -7,16 +7,14 @@ import cn.com.softvan.entity.system.SystemUser;
 import cn.com.softvan.entity.tech.*;
 import cn.com.softvan.mapper.data.DataFileMapper;
 import cn.com.softvan.mapper.system.SystemUserMapper;
-import cn.com.softvan.mapper.tech.CourseStudentMapper;
-import cn.com.softvan.mapper.tech.CourseVideoQuestionMapper;
-import cn.com.softvan.mapper.tech.CourseWorkMapper;
-import cn.com.softvan.mapper.tech.CourseWorkStudentMapper;
+import cn.com.softvan.mapper.tech.*;
 import cn.com.softvan.service.tech.CourseVideoService;
 import cn.com.softvan.service.tech.CourseWorkService;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Condition;
 
 import java.text.ParseException;
@@ -44,6 +42,9 @@ public class CourseVideoServiceImpl extends AbstractService<CourseVideo> impleme
     @Autowired
     private CourseVideoQuestionMapper questionMapper;
 
+    @Autowired
+    private CourseVideoStudentMapper studentMapper;
+
 
     /**
      * 查询视频列表（教师查看）
@@ -66,7 +67,7 @@ public class CourseVideoServiceImpl extends AbstractService<CourseVideo> impleme
 
 
     /**
-     * 查询作业列表（学生查看）
+     * 查询视频列表（学生查看）
      * @param courseId
      * @return
      */
@@ -84,6 +85,9 @@ public class CourseVideoServiceImpl extends AbstractService<CourseVideo> impleme
             if(null != file){
                 courseVideo.setHeadImgFile(file);
             }
+
+            //查询观看进度
+            courseVideo.setStudentWatched(getStudentWatched(courseVideo.getId()));
 
         }
         return list;
@@ -117,5 +121,55 @@ public class CourseVideoServiceImpl extends AbstractService<CourseVideo> impleme
             questionMapper.insert(question);
         }
     }
+
+
+    /**
+     * 查询学生观看进度
+     * @param videoId
+     * @return
+     */
+    public CourseVideoStudent getStudentWatched(Integer videoId){
+        SystemUser student = (SystemUser) SecurityUtils.getSubject().getPrincipal();
+        CourseVideoStudent studentWatched = new CourseVideoStudent();
+        studentWatched.setVideoId(videoId);
+        studentWatched.setStudentId(student.getId());
+        studentWatched = studentMapper.selectStudentWatched(studentWatched);
+        if(null == studentWatched){
+            studentWatched = new CourseVideoStudent();
+            studentWatched.setProgress(0);
+
+        }
+        return studentWatched;
+    }
+
+    /**
+     * 更新学生观看视频进度
+     * @param videoId
+     * @param progress
+     */
+    public void updateStudentWatchedProgress(Integer videoId, Integer progress, Integer latestWatched){
+        SystemUser student = (SystemUser) SecurityUtils.getSubject().getPrincipal();
+        CourseVideoStudent studentWatched = getStudentWatched(videoId);
+        if(StringUtils.isEmpty(studentWatched.getLatestWatched())){
+            studentWatched = new CourseVideoStudent();
+            studentWatched.setProgress(progress);
+            studentWatched.setLatestWatched(latestWatched);
+            studentWatched.setStudentId(student.getId());
+            studentWatched.setVideoId(videoId);
+            studentWatched.setCreateDate(new Date());
+            studentWatched.setUpdateDate(new Date());
+            studentMapper.insertSelective(studentWatched);
+        }
+        else{
+            if(progress > studentWatched.getProgress()){
+                studentWatched.setProgress(progress);
+            }
+            studentWatched.setLatestWatched(latestWatched);
+            studentWatched.setUpdateDate(new Date());
+            studentMapper.updateByPrimaryKeySelective(studentWatched);
+        }
+    }
+
+
 
 }
