@@ -34,6 +34,9 @@ public class SystemUserServiceImpl extends AbstractService<SystemUser> implement
     @Autowired
     private SystemUserRoleMapper systemUserRoleMapper;
 
+    @Autowired
+    private SystemUserMapper systemUserMapper;
+
     @Override
     public String getTemplatePath() {
         return "system/user";
@@ -77,6 +80,11 @@ public class SystemUserServiceImpl extends AbstractService<SystemUser> implement
         saveUserRole(roles,model.getId());
     }
 
+    public void updateUser(SystemUser model){
+        model.setUpdateDate(new Date());
+        mapper.updateByPrimaryKeySelective(model);
+    }
+
     private void saveUserRole(List<Integer> roles ,Integer id){
         if(null != roles){
             for(Integer roleId:roles){
@@ -100,4 +108,7 @@ public class SystemUserServiceImpl extends AbstractService<SystemUser> implement
     }
 
 
+    public List<SystemUser> getRoleUsers(Integer roleId) {
+        return systemUserMapper.selectUsersByRole(roleId);
+    }
 }

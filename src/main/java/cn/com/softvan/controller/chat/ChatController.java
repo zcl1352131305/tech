@@ -31,7 +31,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping(value = "/admin/chat")
-public class ChatController extends BaseController<Course, Integer>{
+public class ChatController extends BaseController<Chat, Integer>{
 
     @Resource
     private ChatService chatService;

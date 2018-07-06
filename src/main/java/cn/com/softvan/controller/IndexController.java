@@ -86,7 +86,24 @@ public class IndexController {
         if (!currentUser.isAuthenticated()){
             //使用shiro来验证
             token.setRememberMe(true);
-            currentUser.login(token);//验证角色和权限
+            try {
+                currentUser.login(token);//验证角色和权限
+            }
+            catch (IncorrectCredentialsException e){
+                String msg = "密码错误";
+                Map<String,Object> map = new HashMap<>();
+                map.put("msg", msg);
+                // 此方法不处理登录成功,由shiro进行处理
+                return new ModelAndView("login", map);
+            }
+            catch (UnknownAccountException exception){
+                String msg = "账号不存在";
+                Map<String,Object> map = new HashMap<>();
+                map.put("msg", msg);
+                // 此方法不处理登录成功,由shiro进行处理
+                return new ModelAndView("login", map);
+            }
+
         }
         return new ModelAndView("redirect:/admin/");
     }

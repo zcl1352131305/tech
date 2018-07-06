@@ -90,10 +90,28 @@
                     </li>
                 </shiro:hasPermission>
 
+                <shiro:hasPermission name="chat">
                 <li>
                     <a class="J_menuItem" href="/admin/chat/tochat">
                         <i class="fa fa-gears"></i>
                         <span class="nav-label">在线聊天</span>
+                    </a>
+                </li>
+                </shiro:hasPermission>
+
+                <shiro:hasPermission name="evaluation">
+                    <li>
+                        <a class="J_menuItem" href="/admin/evaluation/toEvaluation">
+                            <i class="fa fa-gears"></i>
+                            <span class="nav-label">在线评教</span>
+                        </a>
+                    </li>
+                </shiro:hasPermission>
+
+                <li>
+                    <a class="J_menuItem" href="/admin/system/user/toUpdate">
+                        <i class="fa fa-gears"></i>
+                        <span class="nav-label">信息修改</span>
                     </a>
                 </li>
 
