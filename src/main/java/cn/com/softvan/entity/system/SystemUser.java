@@ -1,6 +1,7 @@
 package cn.com.softvan.entity.system;
 
 import cn.com.softvan.entity.BaseEntity;
+import cn.com.softvan.entity.tech.CourseVideoStudent;
 import cn.com.softvan.entity.tech.CourseWorkStudent;
 import lombok.Data;
 
@@ -78,5 +79,15 @@ public class SystemUser extends BaseEntity{
     @Transient
     private CourseWorkStudent studentSubmitWork = new CourseWorkStudent();
 
+    @Transient
+    private CourseVideoStudent studentVideoWatched = new CourseVideoStudent();
+
+
+    @Transient
+    private Integer sendMessageNumsToMe = 0;
+
+    public void addSendMessageNumsToMe(){
+        sendMessageNumsToMe++;
+    }
 
 }

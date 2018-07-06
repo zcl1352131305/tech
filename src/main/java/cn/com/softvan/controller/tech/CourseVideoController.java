@@ -168,4 +168,22 @@ public class CourseVideoController extends BaseController<CourseVideo, Integer>{
         updateSingleFile(videoFiles,bean.getId()+"");
     }
 
+
+    @GetMapping(value = "/videoStudentWatchedList/{videoId}")
+    public ModelAndView list(HttpServletRequest request,
+                             @PathVariable Integer videoId,
+                             String courseId,
+                             Map<String, Object> map){
+
+        if(null == courseId || "null".equals(courseId)){
+            courseId = (String ) request.getSession().getAttribute("workCourseId");
+        }
+        else{
+            request.getSession().setAttribute("workCourseId",courseId);
+        }
+        List<SystemUser> list = courseVideoService.findVideoStudentsWatched(videoId);
+        map.put("dataList", list);
+        map.put("courseId", courseId);
+        return new ModelAndView(courseVideoService.getTemplatePath().concat("_watched_list"), map);
+    }
 }

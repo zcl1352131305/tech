@@ -61,7 +61,7 @@
                         </div>
                         <div class="col-lg-7">
                             <h3 th:text="${video.name}"></h3>
-                            <p>啊阿桑的歌阿斯顿gasket的乖哈岁的客户；按时到货按时到货安是好啦手机号假按揭很拉风咖啡号法案，的哈拉省的哈拉省的哈市两岸三地和</p>
+                            <p th:text="${video.detailInfo}"></p>
                         </div>
                         <div class="col-lg-12" style="margin-top: 20px">
                             <h4>更多视频</h4>
@@ -131,7 +131,7 @@
 
                     //每隔30秒记录观看进度
                     let intPlayTime = parseInt(playTime)+1;
-                    if(intPlayTime%30 ==0 && intPlayTime != parseInt(myPlayer.duration()+1)){
+                    if(intPlayTime%15 ==0 && intPlayTime != parseInt(myPlayer.duration()+1)){
                         let progress = (intPlayTime/myPlayer.duration())*100;
                         updateProgress(progress,intPlayTime)
                     }

@@ -13,6 +13,7 @@ import cn.com.softvan.mapper.tech.CourseStudentMapper;
 import cn.com.softvan.mapper.tech.CourseWorkMapper;
 import cn.com.softvan.mapper.tech.CourseWorkStudentMapper;
 import cn.com.softvan.service.tech.CourseWorkService;
+import cn.com.softvan.utils.WebUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -82,7 +83,7 @@ public class CourseWorkServiceImpl extends AbstractService<CourseWork> implement
     }
 
     /**
-     * 获取该作业的学生提交情况（教师）
+     * 获取该作业的学生提交情况（教师查看）
      * @param workId
      * @return
      */
@@ -100,6 +101,8 @@ public class CourseWorkServiceImpl extends AbstractService<CourseWork> implement
         for(SystemUser student:courseUsers){
             for(CourseWorkStudent studentSubmitWork:studentSubmitWorks){
                 if(student.getId() == studentSubmitWork.getStudentId()){
+                    studentSubmitWork.setDateSubmitStr(WebUtils.getDateTimeString(studentSubmitWork.getDateSubmit()));
+                    studentSubmitWork.setDateCheckedStr(WebUtils.getDateTimeString(studentSubmitWork.getDateChecked()));
                     student.setStudentSubmitWork(studentSubmitWork);
                 }
             }

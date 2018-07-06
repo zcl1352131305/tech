@@ -14,6 +14,8 @@ public interface CourseVideoService extends Service<CourseVideo> {
 
     List<CourseVideo> findList(Integer courseId);
 
+    List<SystemUser> findVideoStudentsWatched(Integer videoId);
+
     List<CourseVideo> findStudentVideoList(Integer courseId);
 
     List<CourseVideoQuestion> getVideoQuestions(Integer videoId);

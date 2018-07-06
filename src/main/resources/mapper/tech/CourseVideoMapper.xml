@@ -8,6 +8,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="course_id" jdbcType="VARCHAR" property="courseId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="detail_info" jdbcType="VARCHAR" property="detailInfo" />
     <result column="file_id" jdbcType="VARCHAR" property="fileId" />
     <result column="head_img_file_id" jdbcType="VARCHAR" property="headImgFileId" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />

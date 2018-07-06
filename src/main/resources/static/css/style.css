@@ -5454,7 +5454,8 @@ dd.project-people {
 }
 
 .chat-message {
-    padding: 10px 20px;
+    margin: 10px 20px;
+    height: 58px;
 }
 
 .message-avatar {
@@ -5465,12 +5466,12 @@ dd.project-people {
     margin-top: 1px;
 }
 
-.chat-discussion .chat-message:nth-child(2n+1) .message-avatar {
+.chat-discussion .chat-message.message-left .message-avatar {
     float: left;
     margin-right: 10px;
 }
 
-.chat-discussion .chat-message:nth-child(2n) .message-avatar {
+.chat-discussion .chat-message.message-right .message-avatar {
     float: right;
     margin-left: 10px;
 }
@@ -5483,24 +5484,26 @@ dd.project-people {
     padding: 10px 20px;
     position: relative;
     border-radius: 4px;
+    max-width: 400px;
+    min-width: 250px;
 }
 
-.chat-discussion .chat-message:nth-child(2n+1) .message-date {
+.chat-discussion .chat-message.message-left .message-date {
     float: right;
 }
 
-.chat-discussion .chat-message:nth-child(2n) .message-date {
+.chat-discussion .chat-message.message-right .message-date {
     float: left;
 }
 
-.chat-discussion .chat-message:nth-child(2n+1) .message {
+.chat-discussion .chat-message.message-left .message {
     text-align: left;
-    margin-left: 55px;
+    float: left;
 }
 
-.chat-discussion .chat-message:nth-child(2n) .message {
+.chat-discussion .chat-message.message-right .message {
     text-align: right;
-    margin-right: 55px;
+    float: right;
 }
 
 .message-date {

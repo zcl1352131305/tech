@@ -13,6 +13,10 @@ import java.util.Date;
 @Data
 public class CourseVideoStudent extends BaseEntity {
 
+    public CourseVideoStudent(){
+        this.progress = 0;
+    }
+
     @Column(name = "video_id")
     private Integer videoId;
 
@@ -23,5 +27,8 @@ public class CourseVideoStudent extends BaseEntity {
 
     @Column(name = "latest_watched")
     private Integer latestWatched;
+
+    @Transient
+    private String startWatchedTime;
 
 }

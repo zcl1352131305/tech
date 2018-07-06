@@ -18,6 +18,9 @@ public class Course  extends BaseEntity {
     private String code;
     private String score;
 
+    @Column(name = "detail_info")
+    private String detailInfo;
+
     private String grade;
 
     private String clazz;

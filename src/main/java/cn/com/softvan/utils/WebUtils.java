@@ -267,6 +267,14 @@ public class WebUtils {
 		return format.format(Calendar.getInstance().getTime());
 	}
 
+	public static String getDateTimeString(Date date){
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		if(null == date){
+			return null;
+		}
+		return format.format(date);
+	}
+
 	/*
 	 * 生成时间的方法
 	 */

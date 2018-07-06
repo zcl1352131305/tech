@@ -18,10 +18,10 @@
                 <a th:href="'/admin/tech/course/list/1?courseId='+${courseId}">课程管理</a>
             </li>
             <li>
-                <a th:href="'/admin/tech/courseWork/workList/1?courseId='+${courseId}">作业管理</a>
+                <a th:href="'/admin/tech/courseVideo/videoList/1?courseId='+${courseId}">视频管理</a>
             </li>
             <li class="active">
-                <strong>提交情况</strong>
+                <strong>学生观看情况</strong>
             </li>
         </ol>
 
@@ -41,12 +41,8 @@
                 <tr>
                     <th>学号</th>
                     <th>姓名</th>
-                    <th>得分</th>
-                    <th>提交时间</th>
-                    <th>批改时间</th>
-                    <th>提交文件</th>
-                    <th>批改文件</th>
-                    <th>操作</th>
+                    <th>开始观看时间</th>
+                    <th>观看进度</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -54,13 +50,12 @@
                 <tr  th:each="bean,stat : ${dataList}">
                     <td th:text="${bean.workid}"></td>
                     <td th:text="${bean.nickname}"></td>
-                    <td th:text="${bean.studentSubmitWork.score}"></td>
-                    <td th:text="${bean.studentSubmitWork.dateSubmitStr}"></td>
-                    <td th:text="${bean.studentSubmitWork.dateCheckedStr}"></td>
-                    <td><a th:if="${null != bean.studentSubmitWork.submitFile}"  th:href="${bean.studentSubmitWork.submitFile.path}" th:attr="download=${bean.studentSubmitWork.submitFile.name}"  th:text="${null != bean.studentSubmitWork.submitFile.name?'下载':'暂未提交'}" ></a></td>
-                    <td><a th:if="${null != bean.studentSubmitWork.checkedFile}"  th:href="${bean.studentSubmitWork.checkedFile.path}" th:attr="download=${bean.studentSubmitWork.checkedFile.name}"  th:text="${null != bean.studentSubmitWork.checkedFile.name?'下载':'暂未批改'}" ></a></td>
-                    <td >
-                        <a th:if="${null != bean.studentSubmitWork.submitFile.name}" th:href="@{'/admin/tech/courseWork/checkedEdit/' + ${bean.studentSubmitWork.id}+'?courseId='+${courseId}}" class="btn btn-info btn-sm" >批改作业</a>
+                    <td th:text="${bean.studentVideoWatched.startWatchedTime}"></td>
+                    <td>
+                        <small th:text="'当前进度：'+${bean.studentVideoWatched.progress}+'%'"></small>
+                        <div class="progress progress-mini">
+                            <div th:style="'width: '+${bean.studentVideoWatched.progress}+'%;'" class="progress-bar"></div>
+                        </div>
                     </td>
                 </tr>
                 </tbody>

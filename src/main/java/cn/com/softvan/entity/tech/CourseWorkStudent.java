@@ -29,17 +29,16 @@ public class CourseWorkStudent extends BaseEntity {
     @Column(name = "date_submit")
     private Date dateSubmit;
 
-    @Transient
-    private String dateSubmitStr;
-
     @Column(name = "date_checked")
     private Date dateChecked;
 
-    @Transient
-    private String dateCheckedStr;
-
     private String score;
 
+
+    @Transient
+    private String dateSubmitStr;
+    @Transient
+    private String dateCheckedStr;
 
     @Transient
     private DataFile submitFile = new DataFile();

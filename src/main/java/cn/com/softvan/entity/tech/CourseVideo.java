@@ -18,6 +18,9 @@ public class CourseVideo extends BaseEntity {
 
     private String name;
 
+    @Column(name = "detail_info")
+    private String detailInfo;
+
 
 
     @Column(name = "file_id")

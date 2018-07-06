@@ -10,6 +10,7 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="score" jdbcType="VARCHAR" property="score" />
+    <result column="detail_info" jdbcType="VARCHAR" property="detailInfo" />
     <result column="grade" jdbcType="VARCHAR" property="grade" />
     <result column="clazz" jdbcType="VARCHAR" property="clazz" />
     <result column="profession" jdbcType="VARCHAR" property="profession" />
@@ -20,7 +21,7 @@
 
 
   <select id="selectStudentCourses" resultType="cn.com.softvan.entity.tech.Course" parameterType="java.lang.Integer">
-    select t1.*,t3.nickname as teacherName from t_course t1
+    select t1.*,t3.nickname as teacherName,t1.detail_info as detailInfo from t_course t1
     LEFT JOIN t_system_user t3 on t1.teacher_id = t3.id
     INNER JOIN t_course_student t2 on t1.id = t2.course_id
     where t2.student_id = #{studentId}

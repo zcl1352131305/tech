@@ -10,6 +10,7 @@ import cn.com.softvan.mapper.system.SystemUserMapper;
 import cn.com.softvan.mapper.tech.*;
 import cn.com.softvan.service.tech.CourseVideoService;
 import cn.com.softvan.service.tech.CourseWorkService;
+import cn.com.softvan.utils.WebUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,8 @@ public class CourseVideoServiceImpl extends AbstractService<CourseVideo> impleme
 
     @Autowired
     private CourseVideoStudentMapper studentMapper;
-
+    @Autowired
+    private CourseStudentMapper courseStudentMapper;
 
     /**
      * 查询视频列表（教师查看）
@@ -63,6 +65,40 @@ public class CourseVideoServiceImpl extends AbstractService<CourseVideo> impleme
         }
         if(null == list) list = new ArrayList<>();
         return list;
+    }
+
+    /**
+     * 获取该作业的学生提交情况（教师查看）
+     * @param videoId
+     * @return
+     */
+    public List<SystemUser> findVideoStudentsWatched(Integer videoId){
+
+        CourseVideo courseVideo = findById(videoId);
+
+        List<CourseVideoStudent> studentSubmitWorks = getVideoStudentsWatched(videoId);
+
+        List<SystemUser> courseUsers = courseStudentMapper.selectCourseStudent(courseVideo.getCourseId());
+
+        for(SystemUser student:courseUsers){
+            for(CourseVideoStudent courseVideoStudent:studentSubmitWorks){
+                if(student.getId() == courseVideoStudent.getStudentId()){
+                    courseVideoStudent.setStartWatchedTime(WebUtils.getDateTimeString(courseVideoStudent.getCreateDate()));
+                    student.setStudentVideoWatched(courseVideoStudent);
+                }
+            }
+        }
+
+        return courseUsers;
+    }
+
+
+    private List<CourseVideoStudent> getVideoStudentsWatched(Integer videoId){
+        Condition swCondition = new Condition(CourseVideoStudent.class);
+        swCondition.createCriteria().andCondition("video_id = '" + videoId+ "'");
+        List<CourseVideoStudent> studentSubmitWorks = studentMapper.selectByCondition(swCondition);
+        if(null == studentSubmitWorks) studentSubmitWorks = new ArrayList<>();
+        return studentSubmitWorks;
     }
 
 

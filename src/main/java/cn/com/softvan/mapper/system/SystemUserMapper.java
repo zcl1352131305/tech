@@ -13,8 +13,6 @@ import java.util.List;
  */
 @Component
 public interface SystemUserMapper extends Mapper<SystemUser> {
-    List<Integer> findSelectedRolesId(Integer userId);
-    SystemUser findUserByName(String userName);
-    List<Integer> findSelectOrganizationsId(Integer userId);
+    List<SystemUser> selectUsersByRole(Integer roleId);
 
 }
