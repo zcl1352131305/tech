@@ -70,12 +70,36 @@
 
                         </ul>
                     </li>
+
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-file-text"></i>
+                            <span class="nav-label">信息管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a class="J_menuItem" href="/admin/tech/courseVideo/adminList/1">视频管理</a>
+                            </li>
+
+                            <li>
+                                <a class="J_menuItem" href="/admin/tech/courseWork/adminList/1">作业管理</a>
+                            </li>
+
+                            <li>
+                                <a class="J_menuItem" href="/admin/chat/adminList/1">聊天信息</a>
+                            </li>
+
+                        </ul>
+                    </li>
                 </shiro:hasPermission>
+
+
 
                 <shiro:hasPermission name="course">
                     <li>
                         <a class="J_menuItem" href="/admin/tech/course/list/1">
-                            <i class="fa fa-gears"></i>
+                            <i class="fa fa-book"></i>
                             <span class="nav-label">课程管理</span>
                         </a>
                     </li>
@@ -84,7 +108,7 @@
                 <shiro:hasPermission name="student">
                     <li>
                         <a class="J_menuItem" href="/admin/tech/student/course/list/1">
-                            <i class="fa fa-gears"></i>
+                            <i class="fa fa-book"></i>
                             <span class="nav-label">我的课程</span>
                         </a>
                     </li>
@@ -93,7 +117,7 @@
                 <shiro:hasPermission name="chat">
                 <li>
                     <a class="J_menuItem" href="/admin/chat/tochat">
-                        <i class="fa fa-gears"></i>
+                        <i class="fa fa-commenting"></i>
                         <span class="nav-label">在线聊天</span>
                     </a>
                 </li>
@@ -102,7 +126,7 @@
                 <shiro:hasPermission name="evaluation">
                     <li>
                         <a class="J_menuItem" href="/admin/evaluation/toEvaluation">
-                            <i class="fa fa-gears"></i>
+                            <i class="fa fa-edit"></i>
                             <span class="nav-label">在线评教</span>
                         </a>
                     </li>
@@ -110,7 +134,7 @@
 
                 <li>
                     <a class="J_menuItem" href="/admin/system/user/toUpdate">
-                        <i class="fa fa-gears"></i>
+                        <i class="fa fa-edit"></i>
                         <span class="nav-label">信息修改</span>
                     </a>
                 </li>

@@ -8,9 +8,12 @@ import cn.com.softvan.entity.tech.Course;
 import cn.com.softvan.entity.tech.CourseWork;
 import cn.com.softvan.enums.ResultEnum;
 import cn.com.softvan.service.chat.ChatService;
+import cn.com.softvan.service.system.SystemUserService;
 import cn.com.softvan.service.tech.CourseService;
 import cn.com.softvan.utils.WebUtils;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +39,9 @@ public class ChatController extends BaseController<Chat, Integer>{
 
     @Resource
     private ChatService chatService;
+    @Resource
+    private SystemUserService systemUserService;
+
 
     @GetMapping(value = "/tochat")
     public ModelAndView tochat(){
@@ -81,5 +88,26 @@ public class ChatController extends BaseController<Chat, Integer>{
         return bean;
     }
 
+    //后台管理员操作
+    @GetMapping(value = "/adminList/{page}")
+    public ModelAndView list(HttpServletRequest request, @PathVariable(value = "page")Integer page,
+                             @RequestParam(value = "size", defaultValue = "15")Integer size,
+                             Map<String, Object> map){
+
+        PageHelper.startPage(page, size);
+        List<Chat> list = chatService.findAll();
+        for(Chat chat:list){
+            if(null != chat.getSender()){
+                chat.setSenderDetail(systemUserService.findById(chat.getSender()));
+            }
+            if(null != chat.getReceiver()){
+                chat.setReceiverDetail(systemUserService.findById(chat.getReceiver()));
+            }
+            chat.setCreateDateStr(WebUtils.getDateTimeString(chat.getCreateDate()));
+        }
+        PageInfo pageInfo = new PageInfo<>(list);
+        map.put("pageInfo", pageInfo);
+        return new ModelAndView("tech/adminChat_list", map);
+    }
 
 }

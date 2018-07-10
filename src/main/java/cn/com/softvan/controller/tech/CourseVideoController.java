@@ -186,4 +186,29 @@ public class CourseVideoController extends BaseController<CourseVideo, Integer>{
         map.put("courseId", courseId);
         return new ModelAndView(courseVideoService.getTemplatePath().concat("_watched_list"), map);
     }
+
+
+
+
+
+
+
+    //后台管理员操作
+    @GetMapping(value = "/adminList/{page}")
+    public ModelAndView list(HttpServletRequest request, @PathVariable(value = "page")Integer page,
+                             @RequestParam(value = "size", defaultValue = "15")Integer size,
+                             Map<String, Object> map){
+
+        PageHelper.startPage(page, size);
+        List<CourseVideo> list = courseVideoService.findAll();
+        for(CourseVideo video:list){
+            if(null != video.getFileId())
+                video.setVideoFile(dataFileService.findById(video.getFileId()));
+            if(null != video.getHeadImgFileId())
+                video.setHeadImgFile(dataFileService.findById(video.getHeadImgFileId()));
+        }
+        PageInfo pageInfo = new PageInfo<>(list);
+        map.put("pageInfo", pageInfo);
+        return new ModelAndView("tech/adminCourseVideo_list", map);
+    }
 }

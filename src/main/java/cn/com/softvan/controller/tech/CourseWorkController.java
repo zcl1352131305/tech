@@ -217,4 +217,23 @@ public class CourseWorkController extends BaseController<CourseWork, Integer>{
         return new ModelAndView("redirect:/admin/".concat(courseWorkService.getTemplatePath()).concat("/workSubmitStudentList/"+bean.getWorkId()+"?courseId="+courseId));
     }
 
+
+    //后台管理员操作
+    @GetMapping(value = "/adminList/{page}")
+    public ModelAndView adminList(HttpServletRequest request, @PathVariable(value = "page")Integer page,
+                             @RequestParam(value = "size", defaultValue = "15")Integer size,
+                             Map<String, Object> map){
+
+        PageHelper.startPage(page, size);
+        List<CourseWork> list = courseWorkService.findAll();
+        for(CourseWork work:list){
+            if(null != work.getFileId())
+                work.setFile(dataFileService.findById(work.getFileId()));
+
+        }
+        PageInfo pageInfo = new PageInfo<>(list);
+        map.put("pageInfo", pageInfo);
+        return new ModelAndView("tech/adminCourseWork_list", map);
+    }
+
 }
